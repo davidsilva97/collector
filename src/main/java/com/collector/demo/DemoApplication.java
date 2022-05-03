@@ -27,6 +27,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -43,14 +45,26 @@ public class DemoApplication {
 	@Autowired
 	private Gateway gateway;
 
-	@Scheduled(fixedDelay = 10000L)
+	private static int i = 0;
+
+	@Scheduled(fixedDelay = 5000L)
 	public void sendMessageJob() throws FileNotFoundException {
 		//gateway
 		String fileName = "files/archivo1.txt";
 		Scanner scan = new Scanner(new File(fileName));
+		List<String> lineas = new ArrayList<>();
 		while(scan.hasNext()){
-			String msj = scan.nextLine();
-			gateway.sendMessage(msj);
+			lineas.add(scan.nextLine());
+		}
+		leerLinea(lineas);
+	}
+
+	public void leerLinea(List<String> arreglo){
+		if(arreglo.get(i)==null){
+			System.out.println("No hay linea por leer");
+		}else{
+			gateway.sendMessage(arreglo.get(i));
+			i++;
 		}
 	}
 
